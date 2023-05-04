@@ -8,6 +8,7 @@ from nltk.tokenize import word_tokenize
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
+from plotly.subplots import make_subplots
 #from sklearn.externals import joblib
 import joblib
 from sqlalchemy import create_engine
@@ -43,12 +44,36 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
-    msgs = df[df.columns[3:]].groupby('genre').sum()
-    conteo = df.drop(columns = ['id', 'message', 'original', 'genre']).sum(axis = 1, skipna = True)
+
+    # adding graph 1: number of requests for each category
+    category_name = df.iloc[:,4:].columns
+    category_counts = df.iloc[:,4:].sum()
+    sorted_counts, sorted_category = zip(*sorted(zip(category_counts, category_name)))
+
+    #graph 2: group the requests by genre
+    cate_genre_count = df[df.columns[3:]].groupby('genre').sum()
 
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
+        {
+            'data': [
+                Bar(
+                    x=sorted_counts,
+                    y=sorted_category,
+                    orientation='h'
+                )
+            ],
+
+            'layout': {
+                'title': 'Counts of requests for each category',
+                'xaxis': {'title': 'Number of requests'},
+                'yaxis':{'tickangle':'-30'},
+                'width':'1200',
+                'height':'800'
+            }
+        },
+
         {
             'data': [
                 Bar(
@@ -59,15 +84,73 @@ def index():
 
             'layout': {
                 'title': 'Distribution of Message Genres',
-                'yaxis': {
-                    'title': "Count"
-                },
-                'xaxis': {
-                    'title': "Genre"
-                }
+                'yaxis': {'title': "Count"},
+                'xaxis': {'title': "Genre"}
             }
-        }
+        },
+
+        {
+            'data':[
+                Bar(
+                    x=cate_genre_count.loc['direct'].sort_values(ascending=False).head(10),
+                    y=list(cate_genre_count.loc['direct'].sort_values(ascending=False).head(10).index),
+                    name='Direct',
+                    orientation='h',
+                )
+            ],
+
+            'layout':{
+                'title': 'Top 10 reported categories via direct source',
+                #'barmode':'group',
+                'xaxis': {'title': 'Counts'},
+                'yaxis':{'tickangle':'-30'},
+                'width':'600',
+                'height':'600'
+            }
+        },
+
+        {
+            'data':[
+                Bar(
+                    x=cate_genre_count.loc['news'].sort_values(ascending=False).head(10),
+                    y=list(cate_genre_count.loc['news'].sort_values(ascending=False).head(10).index),
+                    name='News',
+                    orientation='h',
+                )
+            ],
+
+            'layout':{
+                'title': 'Top 10 reported categories via news source',
+                #'barmode':'group',
+                'xaxis': {'title': 'Counts'},
+                'yaxis':{'tickangle':'-30'},
+                'width':'600',
+                'height':'600'
+            }
+        },
+
+        {
+            'data':[
+                Bar(
+                    x=cate_genre_count.loc['social'].sort_values(ascending=False).head(10),
+                    y=list(cate_genre_count.loc['social'].sort_values(ascending=False).head(10).index),
+                    name='Social',
+                    orientation='h',
+                )
+            ],
+
+            'layout':{
+                'title': 'Top 10 reported categories via social media',
+                #'barmode':'group',
+                'xaxis': {'title': 'Counts'},
+                'yaxis':{'tickangle':'-30'},
+                'width':'600',
+                'height':'600'
+            }
+        },
     ]
+
+
 
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]

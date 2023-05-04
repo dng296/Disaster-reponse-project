@@ -42,7 +42,7 @@ def clean_data(df):
     df = pd.concat([df, categories], axis=1)
     
     # the 'related' column appears to contain values of 2, which will affect the ML step later, so we'll replace them with 1
-    df.loc[df['related']==2, 'related'] =1
+    df['related'] = df['related'].replace(2,1)
     # remove duplicates
     df.drop_duplicates(inplace=True)
    
