@@ -39,7 +39,6 @@ Below are short descriptions of the folders and files in the repository:
     - DisasterResponse.db (database that stores cleaned data)
 - models
     - train_classifier.py (script for ML pipeline)
-- READme.md
 
 
 ## 3. Instructions to Run Scripts <a name="instructions"></a>
