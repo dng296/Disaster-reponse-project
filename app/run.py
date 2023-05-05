@@ -66,7 +66,7 @@ def index():
             ],
 
             'layout': {
-                'title': 'Counts of requests for each category',
+                'title': 'Counts of reports for each category',
                 'xaxis': {'title': 'Number of requests'},
                 'yaxis':{'tickangle':'-30'},
                 'width':'1200',
