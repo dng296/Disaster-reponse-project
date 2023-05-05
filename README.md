@@ -81,4 +81,4 @@ In addition, looking at the two graphs below for top categories reported via dir
 ![news](news.png)
 
 ## 5. Licensing, Authors, and Acknowledgements <a name="licensing"></a>
-The datasets were provided to [Udacity](udacity.com) by [Figure Eight](https://appen.com/#data_for_ai)
+The datasets were provided to [Udacity](https://udacity.com) by [Figure Eight](https://appen.com/#data_for_ai)
